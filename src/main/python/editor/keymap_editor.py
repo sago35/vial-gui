@@ -2,7 +2,7 @@
 import json
 
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QMessageBox, QWidget
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QEvent
 
 from any_keycode_dialog import AnyKeycodeDialog
 from editor.basic_editor import BasicEditor
@@ -18,9 +18,19 @@ class ClickableWidget(QWidget):
 
     clicked = pyqtSignal()
 
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_AcceptTouchEvents)
+
     def mousePressEvent(self, evt):
+        if evt.source() == Qt.MouseEventNotSynthesized:
+            self.clicked.emit()
         super().mousePressEvent(evt)
-        self.clicked.emit()
+
+    def touchEvent(self, evt):
+        if evt.type() == QEvent.TouchBegin:
+            self.clicked.emit()
+        super().touchEvent(evt)
 
 
 class KeymapEditor(BasicEditor):
