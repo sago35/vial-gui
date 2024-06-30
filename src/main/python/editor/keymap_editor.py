@@ -24,14 +24,18 @@ class ClickableWidget(QWidget):
         self.touch_event_occurred = False  # タッチイベントが発生したかを追跡するフラグ
 
     def mousePressEvent(self, evt):
+        print("Mouse Press Event: {}".format(evt))
         if not self.touch_event_occurred:  # タッチイベントが発生していない場合のみ発火
+            print("Mouse Press Event Fired")
             self.clicked.emit()
         self.touch_event_occurred = False  # フラグをリセット
         super().mousePressEvent(evt)
 
     def touchEvent(self, evt):
+        print("Touch Event: {}".format(evt))
         if evt.type() == QEvent.TouchBegin:
             self.touch_event_occurred = True  # タッチイベントが発生したことを記録
+            print("Touch Event Fired")
             self.clicked.emit()
         return super().touchEvent(evt)
 
