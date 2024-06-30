@@ -21,19 +21,16 @@ class ClickableWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WA_AcceptTouchEvents)
-        self.touch_event_occurred = False
 
     def mousePressEvent(self, evt):
-        if not self.touch_event_occurred:
+        if evt.source() != Qt.MouseEventSynthesizedBySystem:
             self.clicked.emit()
-        self.touch_event_occurred = False
         super().mousePressEvent(evt)
 
     def touchEvent(self, evt):
         if evt.type() == QEvent.TouchBegin:
-            self.touch_event_occurred = True
             self.clicked.emit()
-        super().touchEvent(evt)
+        return super().touchEvent(evt)
 
 
 class KeymapEditor(BasicEditor):
